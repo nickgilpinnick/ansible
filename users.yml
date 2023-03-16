@@ -1,0 +1,5 @@
+- name: Add the user 'lakotam' with a primary group of 'sudo'
+  ansible.builtin.user:
+    name: lakotam
+    comment: Lakota Morris
+    group: sudo
