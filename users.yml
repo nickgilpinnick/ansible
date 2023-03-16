@@ -26,6 +26,11 @@
         append: yes
       with_items:  "{{ users }}"
     
+    - name: Deploy SSH Key
+      authorized_key: user: lakotam
+                      key="{{ lookup('file', './keys/lakotam') }}"
+                      state=present
+    
     - name: Disable Password Authentication
       lineinfile:
         dest: /etc/ssh/sshd_config
