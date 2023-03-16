@@ -27,9 +27,10 @@
       with_items:  "{{ users }}"
     
     - name: Deploy SSH Key
-      authorized_key: user: lakotam
-                      key="{{ lookup('file', './keys/lakotam') }}"
-                      state=present
+      authorized_key: 
+        user: lakotam
+        key: "{{ lookup('file', './keys/lakotam') }}"
+        state: present
     
     - name: Disable Password Authentication
       lineinfile:
