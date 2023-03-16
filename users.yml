@@ -22,6 +22,7 @@
       user:
         name: "{{ item }}"
         groups: sudo, wheel
+        shell: /bin/bash
         createhome: yes
         append: yes
       with_items:  "{{ users }}"
