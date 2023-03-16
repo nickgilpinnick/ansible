@@ -1,5 +1,9 @@
-- name: Add the user 'lakotam' with a primary group of 'sudo'
-  ansible.builtin.user:
-    name: lakotam
-    comment: Lakota Morris
-    group: sudo
+---
+- name: This is a test for user administration
+  hosts: ansible
+  tasks:
+    - name: Add the user 'lakotam' with a primary group of 'sudo'
+      ansible.builtin.user:
+        name: lakotam
+        comment: Lakota Morris
+        group: sudo
