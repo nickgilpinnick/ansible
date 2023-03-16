@@ -2,8 +2,23 @@
 - name: This is a test for user administration
   hosts: ansible
   tasks:
+    - name: Make sure we have a 'wheel' group
+      group:
+      name: wheel
+      state: present
+
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^%wheel'
+      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+      validate: 'visudo -cf %s'
+      
     - name: Add the user 'lakotam' with a primary group of 'sudo'
       ansible.builtin.user:
         name: lakotam
         comment: Lakota Morris
-        group: sudo
+        groups: sudo, wheel
+        createhome: yes
+        append: yes
