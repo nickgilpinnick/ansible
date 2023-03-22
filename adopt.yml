@@ -1,0 +1,43 @@
+---
+- name: This is a test for user administration
+  hosts: ansible
+  vars:
+    users:
+      - ansible
+  tasks:
+    - name: Make sure we have a 'wheel' group
+      group:
+        name: wheel
+        state: present
+
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+      
+    - name: Add the user 'ansible' with a primary group of 'sudo'
+      user:
+        name: "{{ item }}"
+        groups: sudo, wheel
+        shell: /bin/bash
+        createhome: yes
+        append: yes
+      with_items:  "{{ users }}"
+    
+    - name: Deploy SSH Key
+      authorized_key: 
+        user: "{{ item }}"
+        key: "{{ lookup('file', './keys/{{ item }}') }}"
+        state: present
+      with_items:  "{{ users }}"
+    
+    - name: Disable Password Authentication
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: "PasswordAuthentication no"
+        state: present
+        backup: yes
