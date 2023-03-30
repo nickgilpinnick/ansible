@@ -10,6 +10,7 @@
       group:
         name: wheel
         state: present
+      become: true
 
     - name: Allow 'wheel' group to have passwordless sudo
       lineinfile:
@@ -18,6 +19,7 @@
         regexp: '^%wheel'
         line: '%wheel ALL=(ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
+      become: true
       
     - name: Add the user 'lakotam' with a primary group of 'sudo'
       user:
@@ -27,6 +29,7 @@
         createhome: yes
         append: yes
       with_items:  "{{ users }}"
+      become: true
     
     - name: Deploy SSH Key
       authorized_key: 
@@ -34,6 +37,7 @@
         key: "{{ lookup('file', './keys/{{ item }}') }}"
         state: present
       with_items:  "{{ users }}"
+      become: true
     
     - name: Disable Password Authentication
       lineinfile:
@@ -42,3 +46,4 @@
         line: "PasswordAuthentication no"
         state: present
         backup: yes
+      become: true
