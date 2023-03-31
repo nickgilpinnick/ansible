@@ -2,7 +2,11 @@
 - name: User administration
   hosts: all
   tasks:
-      
+    - command: cat {{item}}
+      register: ssh_keys
+      with_fileglob: keys/*
+      delegate_to: localhost
+    
     - name: Make sure we have a 'wheel' group
       group:
         name: wheel
@@ -20,20 +24,20 @@
       
     - name: Add the user with a primary group of 'sudo'
       user:
-        name: "{{ item }}"
+        name: "{{item.item.split('/')[-1]}}"
         groups: sudo, wheel
         shell: /bin/bash
         createhome: yes
         append: yes
-      loop: "{{ lookup('pipe', 'ls -mqbQ keys/', wantlist=True) }}"
+      with_items: "{{ssh_keys.results}}"
       become: true
     
     - name: Deploy SSH Key
       authorized_key: 
-        user: "{{ item }}"
-        key: "{{ lookup('file', './keys/{{ item }}') }}"
+        user: "{{item.item.split('/')[-1]}}"
+        key: "{{item.stdout}}"
         state: present
-      loop: "{{ lookup('pipe', 'ls -mqbQ keys/', wantlist=True) }}"
+      with_items: "{{ssh_keys.results}}"
       become: true
     
     - name: Disable Password Authentication
