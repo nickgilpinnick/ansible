@@ -1,11 +1,12 @@
 ---
-- name: This is a test for user administration
+- name: User administration
   hosts: all
   vars:
-    users:
-      - lakotam
-      - ansible
+    directory: ./keys/
   tasks:
+    - command: "ls {{directory}}"
+      register: dir_out
+      
     - name: Make sure we have a 'wheel' group
       group:
         name: wheel
@@ -28,7 +29,7 @@
         shell: /bin/bash
         createhome: yes
         append: yes
-      with_items:  "{{ users }}"
+      with_items:  dir_out.stdout_lines
       become: true
     
     - name: Deploy SSH Key
@@ -36,7 +37,7 @@
         user: "{{ item }}"
         key: "{{ lookup('file', './keys/{{ item }}') }}"
         state: present
-      with_items:  "{{ users }}"
+      with_items:  dir_out.stdout_lines
       become: true
     
     - name: Disable Password Authentication
