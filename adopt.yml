@@ -33,11 +33,3 @@
         key: "{{ lookup('file', './keys/{{ item }}') }}"
         state: present
       with_items:  "{{ users }}"
-    
-    - name: Disable Password Authentication
-      lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: '^PasswordAuthentication'
-        line: "PasswordAuthentication no"
-        state: present
-        backup: yes
