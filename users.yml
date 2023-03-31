@@ -25,7 +25,7 @@
         shell: /bin/bash
         createhome: yes
         append: yes
-      loop: "{{ lookup('pipe', 'ls -1q keys/', wantlist=True) }}"
+      loop: "{{ lookup('pipe', 'ls -m keys/', wantlist=True) }}"
       become: true
     
     - name: Deploy SSH Key
@@ -33,7 +33,7 @@
         user: "{{ item }}"
         key: "{{ lookup('file', './keys/{{ item }}') }}"
         state: present
-      loop: "{{ lookup('pipe', 'ls -1q keys/', wantlist=True) }}"
+      loop: "{{ lookup('pipe', 'ls -m keys/', wantlist=True) }}"
       become: true
     
     - name: Disable Password Authentication
