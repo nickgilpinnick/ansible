@@ -1,6 +1,6 @@
 ---
 - name: This is a test for user administration
-  hosts: ansible
+  hosts: all
   vars:
     users:
       - ansible
