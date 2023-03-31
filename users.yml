@@ -4,7 +4,7 @@
   vars:
     directory: ./keys/
   tasks:
-    - command: "ls {{directory}}"
+    - local_action: ansible.builtin.command "ls {{directory}}"
       register: dir_out
       
     - name: Make sure we have a 'wheel' group
