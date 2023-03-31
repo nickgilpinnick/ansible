@@ -2,10 +2,8 @@
 - name: User administration
   hosts: all
   vars:
-    directory: ./keys/
+    users: "{{ lookup('pipe', 'ls -1 keys/') }}"
   tasks:
-    - local_action: ansible.builtin.command "ls {{directory}}"
-      register: dir_out
       
     - name: Make sure we have a 'wheel' group
       group:
@@ -22,14 +20,14 @@
         validate: 'visudo -cf %s'
       become: true
       
-    - name: Add the user 'lakotam' with a primary group of 'sudo'
+    - name: Add the user with a primary group of 'sudo'
       user:
         name: "{{ item }}"
         groups: sudo, wheel
         shell: /bin/bash
         createhome: yes
         append: yes
-      with_items:  dir_out.stdout_lines
+      with_items:  "{{ users }}"
       become: true
     
     - name: Deploy SSH Key
@@ -37,7 +35,7 @@
         user: "{{ item }}"
         key: "{{ lookup('file', './keys/{{ item }}') }}"
         state: present
-      with_items:  dir_out.stdout_lines
+      with_items:  "{{ users }}"
       become: true
     
     - name: Disable Password Authentication
