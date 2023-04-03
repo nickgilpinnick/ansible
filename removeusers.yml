@@ -5,8 +5,6 @@
     users:
       - younassed
   tasks:
-
-      
     - name: Remove all listed users
       user:
         name: "{{ item }}"
