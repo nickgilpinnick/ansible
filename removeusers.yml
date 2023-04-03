@@ -1,0 +1,15 @@
+---
+- name: This is to remove users.  BE CAREFUL
+  hosts: all
+  vars:
+    users:
+      - younassed
+  tasks:
+
+      
+    - name: Remove all listed users
+      user:
+        name: "{{ item }}"
+        state: absent
+      with_items:  "{{ users }}"
+      become: true
