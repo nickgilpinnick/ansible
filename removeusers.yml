@@ -1,6 +1,7 @@
 ---
 - name: This is to remove users.  BE CAREFUL
   hosts: all
+  gather_facts: no
   vars:
     users:
       - younassed
